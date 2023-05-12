@@ -62,6 +62,13 @@ export const routes = [
             const { id } = req.params;
             const { title, description } = req.body;
 
+            const task = database.select('tasks', { id });
+            if (!task || !task.length) {
+                return res.writeHead(400).end(JSON.stringify({
+                    message: 'task not found'
+                }));
+            }
+
             database.update('tasks', id, { title, description });
 
             return res.writeHead(204).end();
