@@ -62,14 +62,20 @@ export const routes = [
             const { id } = req.params;
             const { title, description } = req.body;
 
-            const task = database.select('tasks', { id });
-            if (!task || !task.length) {
+            const [task] = database.select('tasks', { id });
+            if (!task) {
                 return res.writeHead(400).end(JSON.stringify({
                     message: 'task not found'
                 }));
             }
 
-            database.update('tasks', id, { title, description });
+            database.update('tasks', id, { 
+                title, 
+                description,
+                created_at: task.created_at,
+                updated_at: new Date().toISOString(),
+                completed_at: task.completed_at,
+            });
 
             return res.writeHead(204).end();
         },
